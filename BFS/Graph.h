@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <List.h>
+#include "List.h"
 
 typedef int GraphElement;
 typedef struct GraphObj* Graph;
@@ -76,7 +76,10 @@ void BFS(Graph G, int s);
 
 /***------------------------- Other operations -------------------------***/
 void printGraph(FILE* out, Graph G);
-//function printGraph() prints the adjacency list representation of G to the file pointed to by out. The format of this representation
-// should match the above examples, so all that is required by the client is a single call to printGraph().
+//function printGraph() prints the adjacency list 
+//representation of G to the file pointed to by out. 
+//The format of this representation
+//should match the above examples, so all that is 
+//required by the client is a single call to printGraph().
 
 #endif

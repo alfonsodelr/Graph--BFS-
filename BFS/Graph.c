@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
-#include <Graph.h>
+#include "Graph.h"
 #include "List.h"
 
 #define INF -1
@@ -36,6 +36,12 @@ Graph newGraph(int n)
     Graph G = malloc(sizeof(GraphObj));
     assert(G!=NULL);
     G->list = calloc(n+1, sizeof(List));
+    
+    for(int i = 0; i < (n+1); i++)
+    {
+        G->list[i] = newList();
+    }
+
     G->color = calloc(n+1, sizeof(int));
     G->parent = calloc(n+1, sizeof(int)); //should i set all = NIL?
     G->distance = calloc(n+1, sizeof(int)); 
@@ -130,7 +136,7 @@ void getPath(List L, Graph G, int u)
         EXIT;
     }
 
-    if(getSource==NIL)
+    if(getSource(G)==NIL)
     {
         append(L, NIL);
         return;        
@@ -179,22 +185,49 @@ void addEdge(Graph G, int u, int v) //changes if adj lists are indexed at 0
         EXIT;
     }
 
+    if(u < 1 || u > getOrder(G))
+    {
+        //BOUND_ERROR
+    }
+
+    if(v < 1 || v > getOrder(G))
+    {
+        //BOUND_ERROR
+    }
+
     List U = G->list[u-1];
     List V = G->list[v-1];
 
-    moveFront(U);
-    moveFront(V);
+    if(length(U) == 0 || v > back(U))
+    {
+        append(U, v);
+    }
+    else
+    {
+        //inserting v to U
+        moveFront(U);
+        while(v > get(U))
+        {
+            moveNext(U);
+        }
+        insertBefore(U,v);
+    }
 
-    //inserting v to U
-    while(v > get(U))
-        moveNext(U);
-    insertBefore(v,U);
-    
-    //inserting u to V
-    while(u > get(V))
-        moveNext(V);
-    insertBefore(U,v);
-
+    if(length(V) == 0 || u > back(V))
+    {
+        append(V, u);
+    }
+    else
+    {
+        //inserting u to V
+        moveFront(V);
+        while(u > get(V))
+        {                
+            moveNext(V);
+        }
+        insertBefore(V,u);
+    }
+    G->order++;
 }
 
 void addArc(Graph G, int u, int v)
@@ -214,6 +247,7 @@ void addArc(Graph G, int u, int v)
     {
         //BOUND_ERROR
     }
+
     List V = G->list[v];
 
     moveFront(V);
@@ -222,11 +256,17 @@ void addArc(Graph G, int u, int v)
     while(u > get(V))
         moveNext(V);
     insertBefore(V, u);
-
 }
 
 void BFS(Graph G, int s)
 {
+
+    if(G == NULL)
+    {
+        NULL_ERROR("BFS");
+        EXIT;
+    }
+
     //sets all elements to undiscovered
     for(int i = 0; i < getSize(G); i++)
     {
@@ -269,5 +309,18 @@ void BFS(Graph G, int s)
 /*** Other operations ***/
 void printGraph(FILE* out, Graph G)
 {
+    if(G == NULL)
+    {
+        NULL_ERROR("printGraph");
+        EXIT;
+    }
 
+    fprintf(out, "Printing Adjacency List\n");
+    
+    for(int i = 0; i < G->order-2; i++)
+    {
+        fprintf(out, "%d: ", i+1);
+        printList(out, G->list[i]);
+        fprintf(out, "\n");
+    }
 }
