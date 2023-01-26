@@ -18,7 +18,7 @@
 #define EXIT exit(EXIT_FAILURE);
 
 enum color{
-    WHITE = 0, BLACK, GRAY
+    WHITE = 0, BLACK = 1, GRAY = 2
 };
 
 typedef struct GraphObj{
@@ -36,18 +36,27 @@ Graph newGraph(int n)
     Graph G = malloc(sizeof(GraphObj));
     assert(G!=NULL);
     G->list = calloc(n+1, sizeof(List));
-    
+    G->color = calloc(n+1, sizeof(int));
+    G->parent = calloc(n+1, sizeof(int)); 
+    G->distance = calloc(n+1, sizeof(int)); 
+    G->sourceVertex = NIL;
+    G->order = n;
+    G->size = 0;
+
     for(int i = 0; i < (n+1); i++)
     {
         G->list[i] = newList();
     }
 
-    G->color = calloc(n+1, sizeof(int));
-    G->parent = calloc(n+1, sizeof(int)); //should i set all = NIL?
-    G->distance = calloc(n+1, sizeof(int)); 
-    G->sourceVertex = 0;
-    G->order = 0;
-    G->size = 0;
+    for(int i = 0; i < (n+1); i++)
+    {
+        G->parent[i] = NIL;
+    }
+
+    for(int i = 0; i < (n+1); i++)
+    {
+        G->distance[i] = INF;
+    }
 
     return G;
 }
@@ -109,7 +118,17 @@ int getParent(Graph G, int u)
         EXIT;
     }
 
-    return G->parent[u];
+    if(G->sourceVertex == NIL)
+    {
+        //BFS NOT RUN
+    }
+
+    if(u < 1 || u > getOrder(G))
+    {
+        //BOUND_ERROR
+    }
+
+    return G->parent[u-1];
 }
 
 int getDist(Graph G, int u)
@@ -120,12 +139,17 @@ int getDist(Graph G, int u)
         EXIT;
     }
 
-    if(u < 1 || u > G->order)
+    if(G->sourceVertex == NIL)
     {
-        return INF;
+        //BFS NOT RUN
     }
 
-    return G->distance[u];
+    if(u < 1 || u > getOrder(G))
+    {
+        //BOUND_ERROR
+    }
+    
+    return G->distance[u-1];
 }
 
 void getPath(List L, Graph G, int u)
@@ -136,19 +160,31 @@ void getPath(List L, Graph G, int u)
         EXIT;
     }
 
-    if(getSource(G)==NIL)
+    if(G->sourceVertex == NIL || (u != getSource(G) && getParent(G, u) == NIL))
     {
         append(L, NIL);
-        return;        
+        return;
     }
+
+    List temp = newList();
 
     int current = u;
-
-    while(current != getSource(G))
+    while(current != NIL)
     {
-        prepend(L, getParent(G, current));
-        u = getParent(G, current);
+        prepend(temp, current);
+        current = getParent(G, current);
     }
+
+    int i = 0;
+    moveFront(temp);
+    while(i < length(temp))
+    {
+        append(L, get(temp));
+        moveNext(temp);
+        i++;
+    }
+
+    freeList(&temp);
 }
 
 /*** Manipulation procedures ***/
@@ -163,7 +199,7 @@ void makeNull(Graph G)
 
     int i = 0;
 
-    while(i < getSize(G))
+    while(i < getOrder(G))
     {
         clear(G->list[i]); 
         G->color[i] = WHITE;
@@ -173,11 +209,10 @@ void makeNull(Graph G)
     }
 
     G->size = 0;
-    G->order = 0;
-    G->sourceVertex = 0;
+    G->sourceVertex = NIL;
 }
 
-void addEdge(Graph G, int u, int v) //changes if adj lists are indexed at 0
+void addEdge(Graph G, int u, int v) 
 {
     if(G==NULL)
     {
@@ -198,36 +233,48 @@ void addEdge(Graph G, int u, int v) //changes if adj lists are indexed at 0
     List U = G->list[u-1];
     List V = G->list[v-1];
 
-    if(length(U) == 0 || v > back(U))
+    if(length(U) == 0)
     {
         append(U, v);
     }
     else
     {
-        //inserting v to U
-        moveFront(U);
-        while(v > get(U))
+        if(v > back(U))
         {
-            moveNext(U);
+            append(U, v);
         }
-        insertBefore(U,v);
+        else
+        {
+            moveFront(U);
+            while(v > get(U))
+            {
+                moveNext(U);
+            }
+            insertBefore(U,v);
+        }
     }
 
-    if(length(V) == 0 || u > back(V))
+    if(length(V) == 0)
     {
         append(V, u);
     }
     else
     {
-        //inserting u to V
-        moveFront(V);
-        while(u > get(V))
-        {                
-            moveNext(V);
+        if(u > back(V))
+        {
+            append(V, u);
         }
-        insertBefore(V,u);
+        else
+        {
+            moveFront(V);
+            while(u > get(V))
+            {                
+                moveNext(V);
+            }
+            insertBefore(V,u);
+        }
     }
-    G->order++;
+    G->size++;
 }
 
 void addArc(Graph G, int u, int v)
@@ -248,59 +295,73 @@ void addArc(Graph G, int u, int v)
         //BOUND_ERROR
     }
 
-    List V = G->list[v];
+    List U = G->list[u-1];
 
-    moveFront(V);
-
-    // inserts u to V and NOT vice versa
-    while(u > get(V))
-        moveNext(V);
-    insertBefore(V, u);
+    if(length(U) == 0)
+    {
+        append(U, v);
+    }
+    else
+    {
+        if(u > back(U))
+        {
+            append(U, v);
+        }
+        else
+        {
+            moveFront(U);
+            while(u > get(U))
+                moveNext(U);
+            insertBefore(U, v);
+        }
+    }
+    G->size++;
 }
 
 void BFS(Graph G, int s)
 {
-
     if(G == NULL)
     {
         NULL_ERROR("BFS");
         EXIT;
     }
 
+    G->sourceVertex = s;
     //sets all elements to undiscovered
-    for(int i = 0; i < getSize(G); i++)
+    for(int i = 0; i < getOrder(G); i++)
     {
         G->color[i] = WHITE;
-        G->distance[i] = 0;
+        G->distance[i] = INF;
         G->parent[i] = NIL;
     }
+
     //sets source vertex to discovered
-    G->distance[s] = 0;
-    G->color[s] = GRAY;
-    G->parent[s] = NIL;
+    G->distance[s-1] = 0;
+    G->color[s-1] = GRAY;
+    G->parent[s-1] = NIL;
 
     int curr = 0;
 
     List L = newList();
     prepend(L, s);
-    while(L != NULL)
+    while(length(L) != 0)
     {
         moveFront(L);
         curr = get(L)-1;
         deleteFront(L);
         List temp = G->list[curr];
         moveFront(temp);
-        while(temp != NULL)
+        while(index(temp) != -1)
         {
             int adj_index = get(temp)-1;
             if(G->color[adj_index] == WHITE)
             {
                 G->color[adj_index] = GRAY;
                 G->distance[adj_index] = G->distance[curr]+1;
-                G->parent[adj_index] = curr;
-                append(L, adj_index);
-                moveNext(temp);
+                G->parent[adj_index] = curr+1;
+                append(L, get(temp));
             }
+            moveNext(temp);
         }
         G->color[curr] = BLACK;
     }
@@ -314,10 +375,8 @@ void printGraph(FILE* out, Graph G)
         NULL_ERROR("printGraph");
         EXIT;
     }
-
-    fprintf(out, "Printing Adjacency List\n");
     
-    for(int i = 0; i < G->order-2; i++)
+    for(int i = 0; i < G->order-1; i++)
     {
         fprintf(out, "%d: ", i+1);
         printList(out, G->list[i]);

@@ -88,3 +88,4 @@ int main(int argc, char* argv[]){
    freeGraph(&G);
 
    return(0);
+}

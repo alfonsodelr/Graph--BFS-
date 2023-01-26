@@ -421,12 +421,24 @@ void deleteFront(List L)
             L->index--;
         }
 
-        Node delete_node = L->front;
-        L->front = L->front->next;
-        L->front->prev = NULL;
-        free(delete_node);
-        delete_node = NULL;
-        L->length--;
+        if(L->length == 1)
+        {
+            Node delete_node = L->front;
+            L->front = NULL;
+            L->back = NULL;
+            free(delete_node);
+            delete_node = NULL;
+            L->length--;
+        }
+        else
+        {
+            Node delete_node = L->front;
+            L->front = L->front->next;
+            L->front->prev = NULL;
+            free(delete_node);
+            delete_node = NULL;
+            L->length--;
+        }
     }
 }
 
