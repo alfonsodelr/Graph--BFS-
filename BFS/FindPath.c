@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     int var = (int)(vert_count[0])-48;
 
     Graph G = newGraph(var);
-    
+    List L = newList();
     char* line = calloc(MAX_CHAR_LENGTH, sizeof(char));
 
     //------------ADDS GRAPH EDGES------------//
@@ -49,6 +49,9 @@ int main(int argc, char* argv[])
         addEdge(G, x, y);
     }
 
+    printGraph(write, G);
+    fprintf(write, "\n");
+
     //------------RUNNING BFS FOR DISTANCES------------//
     while(true)
     {
@@ -57,15 +60,43 @@ int main(int argc, char* argv[])
             break;
         int x = (int)(line[0]) - 48;
         int y = (int)(line[2]) - 48;
-        printf("%d %d\n", x, y);
+        clear(L);
+        BFS(G, x);
+        fprintf(write, "The distance from %d to %d is %d\n", x, y, getDist(G, y));
+        getPath(L, G, y);
+        fprintf(write, "The shortest path from %d-%d is: ", x, y);
+        printList(write, L);
+        fprintf(write, "\n");
     }
-
-
-
-
-
-    printf("PRINTING GRAPH\n");
-    printGraph(stdout, G);
 
     return 0;
 }
+
+/*
+QUESTIONS:
+
+Do we kill program for when getDist or getParent is called and BFS isn't run or continue but do nothing with error statement
+
+Should I terminate program for out of bounds error with for example add Edge when 1 <= u <= Order
+
+I implemented everything from index 0 of my list array. Should I redo it or is it fine as long as it works.
+
+Should sourceVertex be NIL by default
+
+Should sourceVertex be set back to NIL when an invalid source is called with BFS
+
+Clearing list inside getpath would case fails in the model graph test. 
+
+Will there be a case where two vertices point to each other in a directed graph. Two arcEdges pointing back and forth? 
+if so would that count as two 
+
+what should be the default values of the main fiels:
+parent
+distance
+color
+sourceVertex
+should I be setting these defaults in newGraph()
+
+if you call bfs on a valid vertex then call it on an invalid vertex should it be set to nil or left as the previous valid vert.
+
+*/

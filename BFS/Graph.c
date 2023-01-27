@@ -166,6 +166,8 @@ void getPath(List L, Graph G, int u)
         return;
     }
 
+    //append NIL if out of bounds
+
     List temp = newList();
 
     int current = u;
@@ -203,8 +205,8 @@ void makeNull(Graph G)
     {
         clear(G->list[i]); 
         G->color[i] = WHITE;
-        G->parent[i] = 0;
-        G->distance[i] = 0;
+        G->parent[i] = NIL;
+        G->distance[i] = INF;
         i++;
     }
 
@@ -376,7 +378,7 @@ void printGraph(FILE* out, Graph G)
         EXIT;
     }
     
-    for(int i = 0; i < G->order-1; i++)
+    for(int i = 0; i < G->order; i++)
     {
         fprintf(out, "%d: ", i+1);
         printList(out, G->list[i]);
