@@ -7,6 +7,9 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#define INF -1
+#define NIL -10
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -58,7 +61,7 @@ void makeNull(Graph G);
 //NOTES: 
 //Both addEdge() and addArc() have the precondition 
 //that their two int arguments must lie
-//in the range 1 to getOrder(G). 
+//in the range 1 to getOrder(G).
 
 void addEdge(Graph G, int u, int v); 
 // Function addEdge() inserts a new edge joining u to v, i.e. 

@@ -15,7 +15,9 @@
 #define NIL -10
 
 #define NULL_ERROR(x) printf("Graph Error: calling %s() on NULL Graph reference\n", x)
-#define EXIT exit(EXIT_FAILURE);
+#define BOUND_ERROR(x) printf("Graph Error: calling %s() with out of bounds reference\n", x)
+#define BFS_ERROR(x) printf("Graph Error: calling %s() without calling BFS beforehand\n", x)
+#define EXIT exit(EXIT_FAILURE)
 
 enum color{
     WHITE = 0, BLACK = 1, GRAY = 2
@@ -35,25 +37,25 @@ Graph newGraph(int n)
 {
     Graph G = malloc(sizeof(GraphObj));
     assert(G!=NULL);
-    G->list = calloc(n+1, sizeof(List));
-    G->color = calloc(n+1, sizeof(int));
-    G->parent = calloc(n+1, sizeof(int)); 
-    G->distance = calloc(n+1, sizeof(int)); 
+    G->list = calloc(n, sizeof(List));
+    G->color = calloc(n, sizeof(int));
+    G->parent = calloc(n, sizeof(int)); 
+    G->distance = calloc(n, sizeof(int)); 
     G->sourceVertex = NIL;
     G->order = n;
     G->size = 0;
 
-    for(int i = 0; i < (n+1); i++)
+    for(int i = 0; i < (n); i++)
     {
         G->list[i] = newList();
     }
 
-    for(int i = 0; i < (n+1); i++)
+    for(int i = 0; i < (n); i++)
     {
         G->parent[i] = NIL;
     }
 
-    for(int i = 0; i < (n+1); i++)
+    for(int i = 0; i < (n); i++)
     {
         G->distance[i] = INF;
     }
@@ -71,7 +73,16 @@ void freeGraph(Graph* pG)
     
     if(pG != NULL && *pG != NULL)
     {
-        //delete everything
+        for(int i = 0; i < (*pG)->order; i++)
+        {
+            freeList(&((*pG)->list[i]));
+        }
+        free((*pG)->list);
+        free((*pG)->distance);
+        free((*pG)->parent);
+        free((*pG)->color);
+        free(*pG);
+        *pG = NULL;
     }
 }
 
@@ -118,14 +129,15 @@ int getParent(Graph G, int u)
         EXIT;
     }
 
-    if(G->sourceVertex == NIL)
-    {
-        //BFS NOT RUN
-    }
-
     if(u < 1 || u > getOrder(G))
     {
-        //BOUND_ERROR
+        BOUND_ERROR("getParent");
+        EXIT;
+    }
+
+    if(G->sourceVertex == NIL)
+    {
+        return NIL;
     }
 
     return G->parent[u-1];
@@ -139,14 +151,15 @@ int getDist(Graph G, int u)
         EXIT;
     }
 
-    if(G->sourceVertex == NIL)
-    {
-        //BFS NOT RUN
-    }
-
     if(u < 1 || u > getOrder(G))
     {
-        //BOUND_ERROR
+        BOUND_ERROR("getDist");
+        EXIT;
+    }
+
+    if(G->sourceVertex == NIL)
+    {
+        return INF;
     }
     
     return G->distance[u-1];
@@ -160,13 +173,23 @@ void getPath(List L, Graph G, int u)
         EXIT;
     }
 
-    if(G->sourceVertex == NIL || (u != getSource(G) && getParent(G, u) == NIL))
+    if(u < 1 || u > getOrder(G))
+    {
+        BOUND_ERROR("getPath");
+        EXIT;
+    }
+
+    if(G->sourceVertex == NIL)
+    {
+        BFS_ERROR("getPath");
+        EXIT;
+    } 
+    
+    if(u != getSource(G) && getParent(G, u) == NIL)
     {
         append(L, NIL);
         return;
     }
-
-    //append NIL if out of bounds
 
     List temp = newList();
 
@@ -224,12 +247,14 @@ void addEdge(Graph G, int u, int v)
 
     if(u < 1 || u > getOrder(G))
     {
-        //BOUND_ERROR
+        BOUND_ERROR("addEdge");
+        EXIT;
     }
 
     if(v < 1 || v > getOrder(G))
     {
-        //BOUND_ERROR
+        BOUND_ERROR("addEdge");
+        EXIT;
     }
 
     List U = G->list[u-1];
@@ -289,12 +314,14 @@ void addArc(Graph G, int u, int v)
 
     if(u < 1 || u > getOrder(G))
     {
-        //BOUND_ERROR
+        BOUND_ERROR("addArc");
+        EXIT;
     }
 
     if(v < 1 || v > getOrder(G))
     {
-        //BOUND_ERROR
+        BOUND_ERROR("addArc");
+        EXIT;
     }
 
     List U = G->list[u-1];
@@ -329,6 +356,7 @@ void BFS(Graph G, int s)
     }
 
     G->sourceVertex = s;
+
     //sets all elements to undiscovered
     for(int i = 0; i < getOrder(G); i++)
     {
@@ -367,6 +395,7 @@ void BFS(Graph G, int s)
         }
         G->color[curr] = BLACK;
     }
+    freeList(&L);
 }
 
 /*** Other operations ***/
