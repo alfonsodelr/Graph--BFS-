@@ -1,88 +1,88 @@
-Student Name: Alfonso Luis Del Rosario
-Student ID: 1698802
-Programming Assignment 2
+              Student Name: Alfonso Luis Del Rosario
+              Student ID: 1698802
+              Programming Assignment 2
 
-                                                List.h 
------------------------------------------------------------------------------------------------------------------------------------------
-Provides function prototypes, parameter details, and function return types of the List ADT to the client. 
-Briefly explains each functions' purpose and use cases.
+                                                              List.h 
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              Provides function prototypes, parameter details, and function return types of the List ADT to the client. 
+              Briefly explains each functions' purpose and use cases.
 
-                                                List.c 
------------------------------------------------------------------------------------------------------------------------------------------
-Implements the functions of the List ADT. Handles invalid and/or empty inputs appropriately. 
-Defines the functionality of the tools provided by the List ADT
-List ADT is a doubly linked list that provides client side users access to functions that can generate dynamically allocated lists.
-These lists' data can be accessed and modified through the various function calls provided and listed in the List.h file. 
+                                                              List.c 
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              Implements the functions of the List ADT. Handles invalid and/or empty inputs appropriately. 
+              Defines the functionality of the tools provided by the List ADT
+              List ADT is a doubly linked list that provides client side users access to functions that can generate dynamically allocated lists.
+              These lists' data can be accessed and modified through the various function calls provided and listed in the List.h file. 
 
-                                                Graph.h
----------------------------------------------------------------------------------------------z--------------------------------------------
-Provides function prototypes, parameter details, and function types of the Graph ADT to the client.
-Briefly explains how each function can be used and use cases for each function.
+                                                              Graph.h
+              ---------------------------------------------------------------------------------------------z--------------------------------------------
+              Provides function prototypes, parameter details, and function types of the Graph ADT to the client.
+              Briefly explains how each function can be used and use cases for each function.
 
-                                                Graph.c
------------------------------------------------------------------------------------------------------------------------------------------
-Implements the functions of the Graph ADT and handles invalid, and out of bounds inputs appropriately.
-Defines functionality to the tools provided by the Graph ADT.
-Graph ADT is a tool that lets clients algorithmically arrange given data into an 
-adjacency list representation of a undirected or directed graph.
-Along with this, the client is also given the tools necessary to find distances and paths from a source vertex to a desired destination.
-Graph ADT uses the Breadth First Search Algorithm to find fastest paths from a set location to a desired destination.
-Its data can be accessed and modified through the function calls listed in Graph.h
-This set of functionality is provided and briefly explained in Graph.h.
+                                                              Graph.c
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              Implements the functions of the Graph ADT and handles invalid, and out of bounds inputs appropriately.
+              Defines functionality to the tools provided by the Graph ADT.
+              Graph ADT is a tool that lets clients algorithmically arrange given data into an 
+              adjacency list representation of a undirected or directed graph.
+              Along with this, the client is also given the tools necessary to find distances and paths from a source vertex to a desired destination.
+              Graph ADT uses the Breadth First Search Algorithm to find fastest paths from a set location to a desired destination.
+              Its data can be accessed and modified through the function calls listed in Graph.h
+              This set of functionality is provided and briefly explained in Graph.h.
 
-                                                GraphTest.c
------------------------------------------------------------------------------------------------------------------------------------------
-GraphTest is a program that tests the functions created for the Graph ADT in an environment that's both optimal and non-optimal.
-Consider it a stress test for every operation built in the Graph ADT.
+                                                              GraphTest.c
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              GraphTest is a program that tests the functions created for the Graph ADT in an environment that's both optimal and non-optimal.
+              Consider it a stress test for every operation built in the Graph ADT.
 
-                                                FindPath.c
------------------------------------------------------------------------------------------------------------------------------------------
-FindPath is a program that takes in (.txt) files as input, parses through the data, and stores that data into a graph object. 
-It takes two sets of inputs: 
-first is a set of paired integers (x, y) that represent a connected edge between vertices x and y. 
-Second is also a set of paired integers (x, y) but now representing a requested fastest path from x to y.
-this is done in succession for all paths requested using the Breadth First Search(BFS) algorithm.
+                                                              FindPath.c
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              FindPath is a program that takes in (.txt) files as input, parses through the data, and stores that data into a graph object. 
+              It takes two sets of inputs: 
+              first is a set of paired integers (x, y) that represent a connected edge between vertices x and y. 
+              Second is also a set of paired integers (x, y) but now representing a requested fastest path from x to y.
+              this is done in succession for all paths requested using the Breadth First Search(BFS) algorithm.
 
-                                                Makefile
------------------------------------------------------------------------------------------------------------------------------------------
-Provides easier command line expressions that make it easier to build and run each of the client side programs.
+                                                              Makefile
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              Provides easier command line expressions that make it easier to build and run each of the client side programs.
 
 
------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------
-SAMPLE RUN:
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              -----------------------------------------------------------------------------------------------------------------------------------------
+              SAMPLE RUN:
 
-/*---in.txt---*/                    ||                  /*---out.txt---*/
-      15                            ||                        1: 7 
-      1 7                           ||                        2: 3 6 
-      2 3                           ||                        3: 2 7 
-      2 6                           ||                        4: 10 
-      3 7                           ||                        5: 9 10 
-      4 10                          ||                        6: 2 7 11 
-      5 9                           ||                        7: 1 3 6 12 
-      5 10                          ||                        8: 13 
-      6 7                           ||                        9: 5 13 14 
-      6 11                          ||                        10: 4 5 15 
-      7 12                          ||                        11: 6 
-      8 13                          ||                        12: 7 
-      9 13                          ||                        13: 8 9 
-      9 14                          ||                        14: 9 15 
-      10 15                         ||                        15: 10 14 
-      14 15                         ||
-      0 0                           ||                        The distance from 1 to 12 is 2
-      1 12                          ||                        A shortest 1-12 path is: 1 7 12 
-      1 15                          ||
-      4 8                           ||                        The distance from 1 to 15 is infinity
-      9 6                           ||                        No 1-15 path exists
-      15 8                          ||
-      0 0                           ||                        The distance from 4 to 8 is 5
-                                    ||                        A shortest 4-8 path is: 4 10 5 9 13 8 
-                                    ||
-                                    ||                        The distance from 9 to 6 is infinity    
-                                    ||                        No 9-6 path exists  
-                                    ||
-                                    ||                        The distance from 15 to 8 is 4
-                                    ||                        A shortest 15-8 path is: 15 14 9 13 8 
+              /*---in.txt---*/                    ||                  /*---out.txt---*/
+                    15                            ||                        1: 7 
+                    1 7                           ||                        2: 3 6 
+                    2 3                           ||                        3: 2 7 
+                    2 6                           ||                        4: 10 
+                    3 7                           ||                        5: 9 10 
+                    4 10                          ||                        6: 2 7 11 
+                    5 9                           ||                        7: 1 3 6 12 
+                    5 10                          ||                        8: 13 
+                    6 7                           ||                        9: 5 13 14 
+                    6 11                          ||                        10: 4 5 15 
+                    7 12                          ||                        11: 6 
+                    8 13                          ||                        12: 7 
+                    9 13                          ||                        13: 8 9 
+                    9 14                          ||                        14: 9 15 
+                    10 15                         ||                        15: 10 14 
+                    14 15                         ||
+                    0 0                           ||                        The distance from 1 to 12 is 2
+                    1 12                          ||                        A shortest 1-12 path is: 1 7 12 
+                    1 15                          ||
+                    4 8                           ||                        The distance from 1 to 15 is infinity
+                    9 6                           ||                        No 1-15 path exists
+                    15 8                          ||
+                    0 0                           ||                        The distance from 4 to 8 is 5
+                                                  ||                        A shortest 4-8 path is: 4 10 5 9 13 8 
+                                                  ||
+                                                  ||                        The distance from 9 to 6 is infinity    
+                                                  ||                        No 9-6 path exists  
+                                                  ||
+                                                  ||                        The distance from 15 to 8 is 4
+                                                  ||                        A shortest 15-8 path is: 15 14 9 13 8 
 
 
 
