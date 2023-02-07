@@ -1,6 +1,6 @@
 /********************************************************************************* 
 * Alfonso Luis Del Rosario, 1698802
-* 2023 Winter CSE101 PA2
+* 2023 Winter CSE101 PA3
 * List.c
 *********************************************************************************/
 
@@ -140,7 +140,8 @@ int get(List L)
         return L->cursor->data;
     }
 
-    return -1;
+    return -1;  
+    
 } //QUESTION: when get is called with no cursor or empty list
 
 bool equals (List A, List B)

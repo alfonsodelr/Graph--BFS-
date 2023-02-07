@@ -1,6 +1,6 @@
 /********************************************************************************* 
 * Alfonso Luis Del Rosario, 1698802
-* 2023 Winter CSE101 PA2
+* 2023 Winter CSE101 PA3
 * Graph.c
 *********************************************************************************/
 
@@ -13,11 +13,14 @@
 
 #define INF -1
 #define NIL -10
+#define UNDEF -100
 
 #define NULL_ERROR(x) printf("Graph Error: calling %s() on NULL Graph reference\n", x)
 #define BOUND_ERROR(x) printf("Graph Error: calling %s() with out of bounds reference\n", x)
 #define BFS_ERROR(x) printf("Graph Error: calling %s() without calling BFS beforehand\n", x)
 #define EXIT exit(EXIT_FAILURE)
+
+int time = 0;
 
 enum color{
     WHITE = 0, BLACK = 1, GRAY = 2
@@ -66,12 +69,12 @@ Graph newGraph(int n)
     
     for(int i = 0; i < (n); i++)
     {
-        G->discover[i] = INF; //CHANGE
+        G->discover[i] = UNDEF; 
     }
     
     for(int i = 0; i < (n); i++)
     {
-        G->finish[i] = INF; //CHANGE
+        G->finish[i] = UNDEF; 
     }
 
     return G;
@@ -192,23 +195,55 @@ int getFinish(Graph G, int u)
         EXIT;
     }
 
-    //CHANGE: check preconditions
-
     return G->finish[u-1];
 }
 
 Graph transpose(Graph G)
 {
-    Graph t_graph = newGraph(getOrder(G));
+    if(G == NULL)
+    {
+        NULL_ERROR("transpose");
+        EXIT;
+    }
 
-    return t_graph;
+    Graph T = newGraph(getOrder(G));
+    List L = NULL;
+
+    for(int i = 0; i < getOrder(G); i++)
+    {
+        L = G->list[i];
+        for(moveFront(L); index(L) >= 0; moveNext(L))
+        {
+            addArc(T, get(L), i+1);
+        }
+    }
+
+    return T;
 }
 
 Graph copyGraph(Graph G)
 {
+    if(G == NULL)
+    {
+        NULL_ERROR("copyGraph");
+        EXIT;
+    }
+
     Graph copy_graph = newGraph(getOrder(G));
 
-    
+    copy_graph->order = getOrder(G);
+    copy_graph->size = getSize(G);
+    copy_graph->sourceVertex = getSource(G);
+
+    for(int i = 0; i < getOrder(G); i++)
+    {
+        copy_graph->list[i] = copyList(G->list[i]);    
+        copy_graph->color[i] = G->color[i];
+        copy_graph->parent[i] = G->parent[i];    
+        copy_graph->distance[i] = G->distance[i];    
+        copy_graph->discover[i] = G->discover[i];    
+        copy_graph->finish[i] = G->finish[i];    
+    }
 
     return copy_graph;
 }
@@ -330,6 +365,11 @@ void addEdge(Graph G, int u, int v)
     List U = G->list[u-1];
     List V = G->list[v-1];
 
+    //check if v is in U list
+    for(moveFront(U); index(U)>=0; moveNext(U))
+        if(get(U) == v)
+            return;
+
     if(length(U) == 0)
     {
         append(U, v);
@@ -396,20 +436,26 @@ void addArc(Graph G, int u, int v)
 
     List U = G->list[u-1];
 
+    //check if v is in U list
+    for(moveFront(U); index(U)>=0; moveNext(U))
+        if(get(U) == v)
+            return;
+
+    //main append loop
     if(length(U) == 0)
     {
         append(U, v);
     }
     else
     {
-        if(u > back(U))
+        if(v > back(U))
         {
             append(U, v);
         }
         else
         {
             moveFront(U);
-            while(u > get(U))
+            while(v > get(U))
                 moveNext(U);
             insertBefore(U, v);
         }
@@ -417,12 +463,25 @@ void addArc(Graph G, int u, int v)
     G->size++;
 }
 
-void Visit(Graph G, int x, int time)
+void Visit(Graph G, List S, int x)
 {
-    G->distance[x] = ++time;
+    G->discover[x] = ++time;
     G->color[x] = GRAY;
     
+    List L = G->list[x];
 
+    for(moveFront(L); index(L) >= 0; moveNext(L))
+    {
+        if(G->color[get(L)-1] == WHITE)
+        {
+            Visit(G, S, get(L)-1);
+            G->parent[get(L)-1] = x+1;
+        }
+    }
+
+    G->color[x] = BLACK;
+    G->finish[x] = ++time;
+    prepend(S, x+1);
 }
 
 void DFS(Graph G, List S)
@@ -433,21 +492,32 @@ void DFS(Graph G, List S)
         EXIT;
     }   
 
+    if(length(S) != getOrder(G))
+    {
+        BOUND_ERROR("DFS");
+        EXIT;
+    }
+
+    G->sourceVertex = 0; //Set to zero so getter functions dont return NIL
+
     for(int i = 0; i < getOrder(G); i++)
     {
         G->color[i] = WHITE;
         G->parent[i] = NIL;
     }
 
-    static int time = 0;
+    time = 0;
 
-    for(int i = 0; i < getOrder(G); i++)
+    List L = copyList(S);
+    clear(S);
+
+    for(moveFront(L); index(L) >= 0; moveNext(L))
     {
-        if(G->color[i] == WHITE)
-        {
-            Visit(G, i, time);
-        }
+        if(G->color[get(L)-1] == WHITE)
+            Visit(G, S, get(L)-1);
     }
+
+    freeList(&L);
 }
 
 void BFS(Graph G, int s)

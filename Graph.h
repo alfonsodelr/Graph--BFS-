@@ -1,6 +1,6 @@
 /********************************************************************************* 
 * Alfonso Luis Del Rosario, 1698802
-* 2023 Winter CSE101 PA2
+* 2023 Winter CSE101 PA3
 * Graph.h
 *********************************************************************************/
 
@@ -9,6 +9,7 @@
 
 #define INF -1
 #define NIL -10
+#define UNDEF -100
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -39,17 +40,15 @@ int getSource(Graph G); //  getSource() returns the source vertex most recently 
 // Functions getParent(), getDist() and getPath() all have the
 // precondition 1 ≤ 𝑢 ≤ getOrder(𝐺).
 
-int getParent(Graph G, int u); 
+int getParent(Graph G, int u); // Function getParent() returns the parent of given vertex
 
-int getDiscover(Graph G, int u);
+int getDiscover(Graph G, int u); // Function getDiscover() returns the discover time of a given vertex
 
-int getFinish(Graph G, int u);
+int getFinish(Graph G, int u); // Function getFinish() returns the finish time of a given vertex
 
-void DFS(Graph G, List S);
+Graph transpose(Graph G); //Function transpose() returns a Graph that holds the transpose copy of of the given Graph
 
-Graph transpose(Graph G);
-
-Graph copyGraph(Graph G);
+Graph copyGraph(Graph G); //Function copyGraph() returns a Graph that is a deep copy of the given graph.
 
 //Function getParent() will return the parent of vertex u in 
 //the BFS tree created by BFS(), or NIL if BFS() has not yet been called.
@@ -87,6 +86,8 @@ void addArc(Graph G, int u, int v);
 void BFS(Graph G, int s); 
 // Function BFS() runs the BFS algorithm on the Graph G with source s,
 // setting the color, distance, parent, and source fields of G accordingly 
+
+void DFS(Graph G, List S);
 
 /***------------------------- Other operations -------------------------***/
 void printGraph(FILE* out, Graph G);

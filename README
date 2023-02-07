@@ -1,0 +1,85 @@
+Student Name: Alfonso Luis Del Rosario
+Student ID: 1698802
+Programming Assignment 3
+
+                                                List.h 
+-----------------------------------------------------------------------------------------------------------------------------------------
+Provides function prototypes, parameter details, and function return types of the List ADT to the client. 
+Briefly explains each functions' purpose and use cases.
+
+                                                List.c 
+-----------------------------------------------------------------------------------------------------------------------------------------
+Implements the functions of the List ADT. Handles invalid and/or empty inputs appropriately. 
+Defines the functionality of the tools provided by the List ADT
+List ADT is a doubly linked list that provides client side users access to functions that can generate dynamically allocated lists.
+These lists' data can be accessed and modified through the various function calls provided and listed in the List.h file. 
+
+                                                Graph.h
+---------------------------------------------------------------------------------------------z--------------------------------------------
+Provides function prototypes, parameter details, and function types of the Graph ADT to the client.
+Briefly explains how each function can be used and use cases for each function.
+
+                                                Graph.c
+-----------------------------------------------------------------------------------------------------------------------------------------
+Implements the functions of the Graph ADT and handles invalid, and out of bounds inputs appropriately.
+Defines functionality to the tools provided by the Graph ADT.
+Graph ADT is a tool that lets clients algorithmically arrange given data into an 
+adjacency list representation of a undirected or directed graph.
+Along with this, the client is also given the tools necessary to find distances and paths from a source vertex to a desired destination.
+Graph ADT uses the Breadth First Search Algorithm to find fastest paths from a set location to a desired destination.
+Its data can be accessed and modified through the function calls listed in Graph.h
+This set of functionality is provided and briefly explained in Graph.h.
+
+                                                GraphTest.c
+-----------------------------------------------------------------------------------------------------------------------------------------
+GraphTest is a program that tests the functions created for the Graph ADT in an environment that's both optimal and non-optimal.
+Consider it a stress test for every operation built in the Graph ADT.
+
+                                                FindComponents.c
+-----------------------------------------------------------------------------------------------------------------------------------------
+Arguments: infile , outfile
+
+FindComponents.c is a program that displays the adjacency list representation of a created Digraph using a given input file. This input 
+file should contain the size of the Graph as its first line and the arcs from vertex to vertex in the following lines. After this process
+has completed, the program calculates the strongly connected components of the Digraph. It does this by generating a stack from a first
+DFS call on the existing graph. After, the program runs DFS a second time in the order of the modified Stack using the original Graph's
+transpose. Through this algorithm, we get the strongly connected components in groups in our newly modified stack, separated by NIL
+parent vertices.
+
+                                                Makefile
+-----------------------------------------------------------------------------------------------------------------------------------------
+Provides easier command line expressions that make it easier to build and run each of the client side programs.
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
+SAMPLE RUN:
+
+/*---in.txt---*/                    ||                  /*---out.txt---*/
+      8                             ||                        Adjacency list representation of G: 
+      1 2                           ||                        1: 2 
+      2 3                           ||                        2: 3 5 6 
+      2 5                           ||                        3: 4 7 
+      2 6                           ||                        4: 3 8 
+      3 4                           ||                        5: 1 6 
+      3 7                           ||                        6: 7 
+      4 3                           ||                        7: 6 8  
+      4 8                           ||                        8: 8 
+      5 1                           ||                        
+      5 6                           ||                        G contains 4 strongly connected components:
+      6 7                           ||                        Component 1: 1 5 2 
+      7 6                           ||                        Component 2: 3 4 
+      7 8                           ||                        Component 3: 7 6 
+      8 8                           ||                        Component 4: 8 
+      0 0                           ||
+                                    ||                        
+                                    ||                        
+                                    ||
+              
+
+
+
+
+
+
+
+
